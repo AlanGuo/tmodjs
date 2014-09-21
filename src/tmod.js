@@ -692,6 +692,7 @@ Tmod.prototype = {
 
         var runtimeCode = runtime({
             type: this.options.type,
+            namespace: this.options.namespace,
             helpers: this._helpersCode,
             templates: templates
         });

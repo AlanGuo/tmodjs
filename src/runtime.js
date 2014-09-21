@@ -180,8 +180,21 @@ var runtime = function () {
 }.toString();
 
 
-var getNamespaceCode = function (type) {
+var getNamespaceCode = function (type,namespace) {
     var code = '';
+
+    var translateNS = "if('"+namespace+"'){"
+    +   "var namespaceArray = '"+namespace+"'.split('.');"
+    +   "var global = this;"
+    +   "namespaceArray.forEach(function(item){"
+    +       "global[item] = global[item] || {};"
+    +       "global = global[item];"
+    +   "});"
+    +   "global.template = template;"
+    +  "}"
+    +  "else{"
+    +    "this.template = template;"
+    +  "}";
 
     switch (type) {
 
@@ -204,8 +217,8 @@ var getNamespaceCode = function (type) {
 
         // 在全局定义
         case 'global':
-
-            code = 'this.template = template;';
+            
+            code = translateNS;
             break;
 
         // 自适应格式
@@ -219,7 +232,7 @@ var getNamespaceCode = function (type) {
             + "} else if (typeof exports !== 'undefined') {"
             +     "module.exports = template;"
             + "} else {"
-            +     "this.template = template;"
+            +    translateNS
             + "}";
 
     }
@@ -232,7 +245,7 @@ var VAR_RE = /['"]<\:(.*?)\:>['"]/g;
 
 module.exports = function (data) {
 
-    data.namespace = getNamespaceCode(data.type);
+    data.namespace = getNamespaceCode(data.type,data.namespace);
 
     var code = runtime
     .replace(VAR_RE, function ($1, $2) {
