@@ -25,6 +25,7 @@ var help = function () {
             '    -d, --debug  Debugging Template',
             '         --type  Optional: default | cmd (RequireJS/SeaJS) | amd (RequireJS) |',
             '                 commonjs (NodeJS)',
+            '         --namespace namespace',
             ' --output value  Defining an output directory',
             '--charset value  Charset, "utf-8" by default',
             '     --no-watch  Does not monitor template directory',
@@ -123,6 +124,11 @@ while (args.length > 0) {
             options.type = args.shift();
             break;
 
+        // 名字空间
+        case '--namespace':
+            options.namespace = args.shift();
+            break;
+
         // 模板编码
         case '--charset':
             options.charset = args.shift();
@@ -154,6 +160,9 @@ while (args.length > 0) {
         case '--version':
             process.stdout.write(version + '\n');
             process.exit();
+            break;
+
+        case '--namespace':
             break;
 
         default:
