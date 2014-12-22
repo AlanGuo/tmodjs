@@ -11,7 +11,7 @@ var runtime = function () {
 
 
     var cache = template.cache = {};
-    var String = this.String;
+    var String = window.String;
 
     function toString (value, type) {
 
@@ -185,7 +185,7 @@ var getNamespaceCode = function (type,namespace) {
 
     var translateNS = "if('"+namespace+"'){"
     +   "var namespaceArray = '"+namespace+"'.split('.');"
-    +   "var global = this;"
+    +   "var global = window;"
     +   "namespaceArray.forEach(function(item){"
     +       "global[item] = global[item] || {};"
     +       "global = global[item];"
