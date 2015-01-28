@@ -526,7 +526,7 @@ Tmod.prototype = {
         if (options.type === 'default' || options.type === 'global') {
             delete options.alias;
         } else {
-            delete options.combo;
+            //delete options.combo;
         }
 
 
@@ -697,8 +697,9 @@ Tmod.prototype = {
             templates: templates
         });
 
-
         runtimeCode = this._setMetadata(runtimeCode, metadata);
+
+
 
         try {
             this._fsMkdir(path.dirname(this.runtime));

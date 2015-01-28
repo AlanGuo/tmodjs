@@ -1,6 +1,6 @@
 /*! Template Runtime */
 
-var runtime = function () {
+var runtime = function (require, exports, module) {
 
     function template (filename, content) {
         return (
@@ -172,11 +172,14 @@ var runtime = function () {
         helpers[name] = helper;
     };
 
-
     '<:namespace:>'
     '<:helpers:>'
     '<:templates:>'
 
+    //兼容cmd-concat模式
+    if(module){
+        module.exports = template;
+    }
 }.toString();
 
 
@@ -186,10 +189,11 @@ var getNamespaceCode = function (type,namespace) {
     var translateNS = "if('"+namespace+"'){"
     +   "var namespaceArray = '"+namespace+"'.split('.');"
     +   "var global = window;"
-    +   "namespaceArray.forEach(function(item){"
+    +   "for(var i=0;i<namespaceArray.length;i++){"
+    +       "var item = namespaceArray[i];"
     +       "global[item] = global[item] || {};"
     +       "global = global[item];"
-    +   "});"
+    +   "}"
     +   "global.template = template;"
     +  "}"
     +  "else{"
@@ -244,7 +248,7 @@ var getNamespaceCode = function (type,namespace) {
 var VAR_RE = /['"]<\:(.*?)\:>['"]/g;
 
 module.exports = function (data) {
-
+    var namespace = data.namespace;
     data.namespace = getNamespaceCode(data.type,data.namespace);
 
     var code = runtime
@@ -252,6 +256,13 @@ module.exports = function (data) {
         return data[$2] || '';
     });
 
-    code = '!' + code + '()';
+    //兼容cmd合并文件模式
+    if(data.type === 'cmd-concat'){
+        code = 'define(\''+namespace+'\',' + code + ');';
+    }
+    else{
+        code = '!' + code + '()';
+    }
+    
     return code;
 };
