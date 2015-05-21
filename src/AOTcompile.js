@@ -116,7 +116,6 @@ module.exports = function (template) {
 
 
             default:
-
                 code = "template('" + filename + "'," + code + ");";
 
         }
@@ -158,10 +157,11 @@ module.exports = function (template) {
     var compile = function (source, options) {
 
         var render = template.compile(source, options);
-
         return render
         .toString()
-        .replace(ANONYMOUS_RE, 'function');
+        .replace(ANONYMOUS_RE, 'function')
+        /*node引擎更新之后出现的注释*/
+        .replace(/\n\/\*\*\//,'');
     };
 
 
